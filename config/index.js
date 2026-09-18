@@ -17,12 +17,20 @@ try {
   console.error('Error loading config/default.json:', error.message);
 }
 
+let rootConfig = {};
+const rootConfigPath = path.resolve(__dirname, '../config.json');
+try {
+  if (fs.existsSync(rootConfigPath)) {
+    rootConfig = JSON.parse(fs.readFileSync(rootConfigPath, 'utf-8'));
+  }
+} catch (_) {}
+
 const pkg = (() => {
   try { return require('../package.json'); } catch (_) { return {}; }
 })();
 
 module.exports = {
-  BOT_NAME:    c.nickNameBot || 'InstaBOT',
+  BOT_NAME:    rootConfig.botName || c.nickNameBot || 'InstaBOT',
   BOT_VERSION: pkg.version   || '1.0.0',
   AUTHOR:      pkg.author    || 'Gtajisan && frnAlt',
 
@@ -34,18 +42,35 @@ module.exports = {
   ACCOUNT_USER_AGENT: process.env.ACCOUNT_USER_AGENT || c.instagramAccount?.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
   INTERVAL_GET_NEW_COOKIE: c.instagramAccount?.intervalGetNewCookie ?? 1440,
 
-  ANTI_INBOX:   c.antiInbox   ?? false,
-  LANGUAGE:     c.language    || 'en',
-  NICK_NAME_BOT: c.nickNameBot || 'InstaBOT',
-  PREFIX:       process.env.PREFIX || c.prefix || '!',
-  NO_PREFIX:    c.noPrefix ?? true,
+  ANTI_INBOX:   rootConfig.antiInbox ?? c.antiInbox ?? false,
+  LANGUAGE:     rootConfig.language || c.language || 'en',
+  NICK_NAME_BOT: rootConfig.botName || c.nickNameBot || 'InstaBOT',
+  PREFIX: (() => {
+    if (process.env.PREFIX !== undefined) return process.env.PREFIX;
+    if (rootConfig.prefix !== undefined) return String(rootConfig.prefix);
+    if (rootConfig.PREFIX !== undefined) return String(rootConfig.PREFIX);
+    if (c.prefix !== undefined) return String(c.prefix);
+    return '*';
+  })(),
+  NO_PREFIX:    rootConfig.noPrefix ?? c.noPrefix ?? true,
 
-  ADMIN_ONLY_ENABLE:          c.adminOnly?.enable ?? false,
-  ADMIN_ONLY_IGNORE_COMMANDS: c.adminOnly?.ignoreCommand || [],
+  ADMIN_ONLY_ENABLE:          rootConfig.adminOnly?.enable ?? c.adminOnly?.enable ?? false,
+  ADMIN_ONLY_IGNORE_COMMANDS: rootConfig.adminOnly?.ignoreCommands || c.adminOnly?.ignoreCommand || [],
 
-  ADMIN_BOT:     c.adminBot     || [],
+  ADMIN_BOT: (() => {
+    if (process.env.IG_ADMIN_BOT && process.env.IG_ADMIN_BOT.trim()) {
+      return process.env.IG_ADMIN_BOT.split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (Array.isArray(rootConfig.adminBot) && rootConfig.adminBot.length > 0) return rootConfig.adminBot;
+    if (Array.isArray(c.adminBot)) return c.adminBot;
+    return [];
+  })(),
   PREMIUM_USERS: c.premiumUsers || [],
-  DEV_USERS:     c.devUsers     || [],
+  DEV_USERS: (() => {
+    if (Array.isArray(rootConfig.devUsers) && rootConfig.devUsers.length > 0) return rootConfig.devUsers;
+    if (Array.isArray(c.devUsers) && c.devUsers.length > 0) return c.devUsers;
+    return [];
+  })(),
 
   WHITELIST_ENABLE: c.whiteListMode?.enable ?? false,
   WHITELIST_IDS:    c.whiteListMode?.whiteListIds || [],
