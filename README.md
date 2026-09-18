@@ -289,5 +289,5 @@ SESSION_SECRET=change_this_secret
 
 # Project Owner: Siam Ahmed Saan
 # Brand: Saan Exhausted
-# GitHub: Saan-Irl
+# GitHub: Fineshyt-Saan
 # Instagram: siam_exists
