@@ -11,7 +11,7 @@
   "antiInbox": false,
   "language": "en",
   "nickNameBot": "InstaBOT",
-  "prefix": "*",
+  "prefix": "!",
   "noPrefix": true,
   "defaultOff": false,
   "adminOnly": {
@@ -19,16 +19,16 @@
     "ignoreCommand": []
   },
   "adminBot": [
-    "36296727311",
-    "49212864825"
+    "70161745815",
+    ""
   ],
   "premiumUsers": [
-    "49212864825",
-    "36296727311"
+    "70161745815",
+    ""
   ],
   "devUsers": [
-    "49212864825",
-    "36296727311"
+    "70161745815",
+    ""
   ],
   "whiteListMode": {
     "enable": false,
