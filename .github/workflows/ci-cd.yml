@@ -1,0 +1,67 @@
+name: InstaBOT CI/CD Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      node_version:
+        description: 'Node.js version'
+        required: false
+        type: choice
+        options:
+          - '22'
+          - '20'
+        default: '22'
+      run_syntax_checks:
+        description: 'Run syntax check on core engine, commands and events'
+        required: false
+        type: boolean
+        default: true
+      run_unit_tests:
+        description: 'Run unit test suite'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  test-and-validate:
+    name: Build, Syntax & Diagnostic Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version || '22' }}
+
+      - name: Cache Node Modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: npm install --include=optional
+
+      - name: Core System Syntax Verification
+        if: ${{ inputs.run_syntax_checks != false }}
+        run: |
+          node --check index.js utils.js
+          node --check src/bot.js src/config.js src/logger.js src/dispatcher.js src/database.js src/utils.js
+          node --check logger/index.js logger/log.js
+
+      - name: All Commands Syntax Check
+        if: ${{ inputs.run_syntax_checks != false }}
+        run: for file in commands/*.js; do node --check "$file"; done
+
+      - name: All Events Syntax Check
+        if: ${{ inputs.run_syntax_checks != false }}
+        run: for file in events/*.js; do node --check "$file"; done
+
+      - name: Run Unit Tests
+        if: ${{ inputs.run_unit_tests != false }}
+        run: npm test

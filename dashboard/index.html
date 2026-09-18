@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>InstaBOT Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #0a0d14;
+    --sidebar-bg: #07090e;
+    --card-bg: rgba(15, 20, 32, 0.85);
+    --border-purple: rgba(168, 85, 247, 0.35);
+    --border-cyan: rgba(6, 182, 212, 0.35);
+    --border-dim: rgba(255, 255, 255, 0.08);
+
+    --neon-purple: #a855f7;
+    --neon-cyan: #06b6d4;
+    --neon-blue: #3b82f6;
+    --neon-pink: #ec4899;
+    --neon-green: #10b981;
+
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --text-dim: #6b7280;
+
+    --font-sans: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+  ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+  /* Sidebar */
+  aside {
+    width: 90px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-dim);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+    z-index: 100;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 36px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  }
+
+  .logo-text {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-main);
+  }
+
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    align-items: center;
+    flex: 1;
+  }
+
+  .nav-item {
+    width: 48px;
+    height: 48px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    transition: all 0.25s ease;
+    user-select: none;
+  }
+
+  .nav-item:hover, .nav-item:active {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .nav-item.active {
+    background: rgba(168, 85, 247, 0.15);
+    color: var(--neon-purple);
+    border: 1px solid var(--border-purple);
+    box-shadow: 0 0 14px rgba(168, 85, 247, 0.25);
+  }
+
+  .nav-bottom {
+    margin-top: auto;
+  }
+
+  /* Main Content Layout */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Top Bar Header */
+  header {
+    height: 70px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-dim);
+    background: rgba(10, 13, 20, 0.8);
+    backdrop-filter: blur(12px);
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-title span {
+    font-weight: 300;
+    color: var(--text-muted);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .bell-btn {
+    position: relative;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-dim);
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .bell-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 7px;
+    height: 7px;
+    background: var(--neon-pink);
+    border-radius: 50%;
+  }
+
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .user-avatar {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .status-dot-online {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 10px;
+    height: 10px;
+    background: var(--neon-green);
+    border: 2px solid var(--bg-dark);
+    border-radius: 50%;
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .user-status {
+    font-size: 0.75rem;
+    color: var(--neon-green);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Content Wrapper */
+  .content {
+    padding: 24px 32px;
+    flex: 1;
+  }
+
+  .view-section {
+    display: none;
+  }
+  .view-section.active {
+    display: block;
+  }
+
+  /* Top 4 Neon Cards Grid */
+  .grid-top-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .neon-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--border-purple);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.12);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .neon-card.cyan-border {
+    border-color: var(--border-cyan);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.12);
+  }
+
+  .neon-card:hover, .neon-card:active {
+    transform: translateY(-2px);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .card-icon-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid var(--border-purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--neon-purple);
+  }
+  .cyan-border .card-icon-badge {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: var(--border-cyan);
+    color: var(--neon-cyan);
+  }
+
+  .card-val {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .card-bottom-sub {
+    font-size: 0.78rem;
+    color: var(--neon-green);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card-bottom-sub.dim {
+    color: var(--text-muted);
+  }
+  .card-bottom-sub.dim span {
+    color: var(--neon-cyan);
+    font-weight: 600;
+  }
+
+  .sparkline-svg {
+    width: 100%;
+    height: 32px;
+    margin-top: 4px;
+  }
+
+  /* Main 3 Columns Section */
+  .grid-main-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .section-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-dim);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 440px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--text-main);
+    text-transform: uppercase;
+  }
+
+  .dots-menu {
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+  }
+
+  /* Filter & Search Bar */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    background: rgba(15, 20, 32, 0.7);
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-dim);
+  }
+
+  .input-search {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-dim);
+    color: var(--text-main);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    outline: none;
+    flex: 1;
+  }
+  .input-search:focus { border-color: var(--neon-purple); }
+
+  .select-filter {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-dim);
+    color: var(--text-main);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .btn-action {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-dim);
+    color: var(--text-main);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .btn-action:hover, .btn-action:active {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Column 1: Real-Time Logs */
+  .logs-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .log-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .log-time-action {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .log-timestamp {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+  }
+
+  .log-action-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .log-user-tag {
+    font-size: 0.78rem;
+    color: var(--neon-purple);
+  }
+
+  .log-type-icon {
+    font-size: 16px;
+    color: var(--neon-pink);
+  }
+
+  .logs-footer {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  /* Column 2: Active Sessions */
+  .sessions-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .session-card-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-dim);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .session-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--border-dim);
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .session-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .session-header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .session-username {
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  .active-badge {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--neon-green);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  .session-sub {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .ig-icon {
+    color: var(--neon-pink);
+    font-size: 18px;
+  }
+
+  /* Column 3: System Performance Graphs */
+  .perf-metric-block {
+    margin-bottom: 20px;
+  }
+
+  .perf-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .perf-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .perf-val {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--neon-purple);
+  }
+  .perf-val.cyan { color: var(--neon-cyan); }
+
+  .graph-container {
+    width: 100%;
+    height: 90px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .graph-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* Diagnostic Code Block */
+  .tree-code {
+    background: #04060a;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border-dim);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--neon-cyan);
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  /* Responsive Touch Layout for Mobile/Tablets */
+  @media (max-width: 900px) {
+    body {
+      flex-direction: column-reverse;
+      height: auto;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+    aside {
+      width: 100%;
+      height: 60px;
+      padding: 0 16px;
+      flex-direction: row;
+      justify-content: space-between;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background: rgba(7, 9, 14, 0.95);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-dim);
+      border-right: none;
+    }
+    .sidebar-logo { display: none; }
+    .nav-menu {
+      flex-direction: row;
+      justify-content: space-around;
+      gap: 0;
+    }
+    .nav-bottom { margin-top: 0; }
+    main {
+      height: auto;
+      padding-bottom: 70px;
+    }
+    .grid-top-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .grid-main-columns, .grid-3 {
+      grid-template-columns: 1fr;
+    }
+    header {
+      padding: 0 16px;
+    }
+    .content {
+      padding: 16px;
+    }
+  }
+
+  @media (max-width: 550px) {
+    .grid-top-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Left Sidebar / Mobile Bottom Nav Bar -->
+  <aside>
+    <div class="sidebar-logo" id="logo-btn-home">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">InstaBOT</div>
+    </div>
+
+    <div class="nav-menu">
+      <button class="nav-item active" id="nav-btn-overview" title="Dashboard Overview">🎛️</button>
+      <button class="nav-item" id="nav-btn-sessions" title="Active Sessions">👥</button>
+      <button class="nav-item" id="nav-btn-commands" title="Commands Catalog">⚡</button>
+      <button class="nav-item" id="nav-btn-logs" title="System Logs">📄</button>
+      <button class="nav-item" id="nav-btn-debug" title="Diagnostics">🛠️</button>
+    </div>
+
+    <div class="nav-bottom">
+      <button class="nav-item" id="nav-btn-exit" title="Save & Sync">💾</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Top Bar Header -->
+    <header>
+      <div class="header-title">
+        INSTABOT <span>DASHBOARD</span>
+      </div>
+
+      <div class="header-right">
+        <div class="bell-btn" id="btn-notification-bell" title="Refresh Status">
+          🔔
+          <div class="bell-dot"></div>
+        </div>
+
+        <div class="user-profile" id="btn-user-profile">
+          <div class="user-avatar" id="avatar-user-letter">
+            I
+            <div class="status-dot-online" id="dot-user-online"></div>
+          </div>
+          <div class="user-info">
+            <div class="user-name" id="label-user-name">InstaBOT Admin</div>
+            <div class="user-status" id="label-user-status">● Online</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="content">
+
+      <!-- SECTION 1: OVERVIEW -->
+      <div class="view-section active" id="view-overview">
+        <!-- Top 4 Neon Metric Cards -->
+        <div class="grid-top-cards">
+          
+          <div class="neon-card" id="card-total-users">
+            <div class="card-top">
+              <span class="card-label">TOTAL USERS</span>
+              <div class="card-icon-badge">👥</div>
+            </div>
+            <div class="card-val" id="val-total-users">0</div>
+            <div class="card-bottom-sub">
+              ↑ +2.4% <span style="color:var(--text-dim); margin-left:4px;">active growth</span>
+            </div>
+            <svg class="sparkline-svg" viewBox="0 0 100 25" preserveAspectRatio="none">
+              <path d="M0,20 Q25,5 50,15 T100,5" fill="none" stroke="var(--neon-cyan)" stroke-width="2"/>
+            </svg>
+          </div>
+
+          <div class="neon-card cyan-border" id="card-system-health">
+            <div class="card-top">
+              <span class="card-label">HEALTH & UPTIME</span>
+              <div class="card-icon-badge">📈</div>
+            </div>
+            <div class="card-val" id="val-uptime">0s</div>
+            <div class="card-bottom-sub">
+              ↑ 99.9% <span style="color:var(--text-dim); margin-left:4px;">system stability</span>
+            </div>
+          </div>
+
+          <div class="neon-card" id="card-commands">
+            <div class="card-top">
+              <span class="card-label">COMMANDS LOADED</span>
+              <div class="card-icon-badge">⚡</div>
+            </div>
+            <div class="card-val" id="val-cmd-count">92</div>
+            <div class="card-bottom-sub dim">
+              last 24h: <span id="val-events-count">7 Events</span>
+            </div>
+          </div>
+
+          <div class="neon-card cyan-border" id="card-messages">
+            <div class="card-top">
+              <span class="card-label">MESSAGES PROCESSED</span>
+              <div class="card-icon-badge">💬</div>
+            </div>
+            <div class="card-val" id="val-processed-count">4,921</div>
+            <div class="card-bottom-sub dim">
+              last 24h: <span id="val-processed-24h">115</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Main 3 Columns Section -->
+        <div class="grid-main-columns">
+
+          <div class="section-card" id="col-command-logs">
+            <div class="section-header">
+              <span class="section-title">REAL-TIME COMMAND LOGS</span>
+              <span class="dots-menu" id="btn-menu-logs">•••</span>
+            </div>
+            <div class="logs-list" id="container-command-logs"></div>
+            <div class="logs-footer">Auto-scrollable log stream</div>
+          </div>
+
+          <div class="section-card" id="col-active-sessions">
+            <div class="section-header">
+              <span class="section-title">ACTIVE SESSIONS & THREADS</span>
+              <span class="dots-menu" id="btn-menu-sessions">•••</span>
+            </div>
+            <div class="sessions-list" id="container-active-sessions"></div>
+          </div>
+
+          <div class="section-card" id="col-system-performance">
+            <div class="section-header">
+              <span class="section-title">SYSTEM PERFORMANCE</span>
+              <span class="dots-menu" id="btn-menu-perf">•••</span>
+            </div>
+
+            <div class="perf-metric-block">
+              <div class="perf-header">
+                <span class="perf-label">CPU USAGE</span>
+                <span class="perf-val" id="val-cpu-pct">48%</span>
+              </div>
+              <div class="graph-container">
+                <svg width="100%" height="100%" viewBox="0 0 200 90" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="gradPurple" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="var(--neon-purple)" stop-opacity="0.6"/>
+                      <stop offset="100%" stop-color="var(--neon-purple)" stop-opacity="0.0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,70 Q30,20 60,50 T120,30 T180,60 T200,40 L200,90 L0,90 Z" fill="url(#gradPurple)"/>
+                  <path d="M0,70 Q30,20 60,50 T120,30 T180,60 T200,40" fill="none" stroke="var(--neon-purple)" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="graph-footer">
+                <span>10 minute</span>
+                <span>history</span>
+              </div>
+            </div>
+
+            <div class="perf-metric-block">
+              <div class="perf-header">
+                <span class="perf-label">RAM USAGE</span>
+                <span class="perf-val cyan" id="val-ram-usage">128MB / 512MB</span>
+              </div>
+              <div class="graph-container">
+                <svg width="100%" height="100%" viewBox="0 0 200 90" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="gradCyan" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="var(--neon-cyan)" stop-opacity="0.6"/>
+                      <stop offset="100%" stop-color="var(--neon-cyan)" stop-opacity="0.0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,60 Q40,40 80,70 T140,50 T200,65 L200,90 L0,90 Z" fill="url(#gradCyan)"/>
+                  <path d="M0,60 Q40,40 80,70 T140,50 T200,65" fill="none" stroke="var(--neon-cyan)" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="graph-footer">
+                <span>10 minute</span>
+                <span>History</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 2: SESSIONS & THREADS -->
+      <div class="view-section" id="view-sessions">
+        <div class="filter-bar">
+          <input type="text" class="input-search" id="input-search-sessions" placeholder="Search active threads by name or ID..." onkeyup="renderSessionsFull()">
+          <button class="btn-action" id="btn-refresh-sessions-tab">🔄 Refresh Inbox</button>
+        </div>
+        <div class="grid-3" id="container-sessions-full-grid"></div>
+      </div>
+
+      <!-- SECTION 3: COMMANDS CATALOG -->
+      <div class="view-section" id="view-commands">
+        <div class="filter-bar">
+          <input type="text" class="input-search" id="input-search-cmds" placeholder="Search commands catalog..." onkeyup="renderCommandsFull()">
+          <select class="select-filter" id="select-cmd-cat" onchange="renderCommandsFull()">
+            <option value="ALL">All Categories</option>
+            <option value="ai">AI & Intelligence</option>
+            <option value="media">Media & Downloaders</option>
+            <option value="utility">Utility & Tools</option>
+            <option value="fun">Fun & Games</option>
+          </select>
+        </div>
+        <div class="grid-3" id="container-commands-full-grid"></div>
+      </div>
+
+      <!-- SECTION 4: CONSOLE LOGS -->
+      <div class="view-section" id="view-logs">
+        <div class="filter-bar">
+          <select class="select-filter" id="select-log-level" onchange="renderLogsFull()">
+            <option value="ALL">All Log Levels</option>
+            <option value="INFO">INFO</option>
+            <option value="WARN">WARN</option>
+            <option value="ERROR">ERROR</option>
+          </select>
+          <input type="text" class="input-search" id="input-search-logs" placeholder="Filter console log stream..." onkeyup="renderLogsFull()">
+          <button class="btn-action" id="btn-refresh-logs-tab">🔄 Refresh Logs</button>
+        </div>
+        <div class="section-card" style="height:550px;">
+          <div class="logs-list" id="container-logs-full-stream"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: DIAGNOSTICS -->
+      <div class="view-section" id="view-debug">
+        <div class="filter-bar" style="justify-content:space-between;">
+          <span style="font-weight:700;">🛠️ System Process Diagnostics Inspector</span>
+          <button class="btn-action" id="btn-refresh-debug-tab">🔄 Fetch Payload</button>
+        </div>
+        <div class="tree-code" id="code-debug-tree-full">Loading process diagnostics...</div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let state = {
+      status: {},
+      threads: [],
+      commands: [],
+      logs: [],
+      debug: {}
+    };
+
+    function addTouchClick(el, handler) {
+      if (!el) return;
+      let touched = false;
+
+      el.addEventListener('touchstart', function(e) {
+        touched = true;
+        handler(e);
+      }, { passive: true });
+
+      el.addEventListener('click', function(e) {
+        if (!touched) {
+          handler(e);
+        }
+        touched = false;
+      });
+    }
+
+    function switchView(viewName) {
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.view-section').forEach(sec => {
+        sec.classList.remove('active');
+        sec.style.display = 'none';
+      });
+
+      const activeNav = document.getElementById(`nav-btn-${viewName}`);
+      const activeSec = document.getElementById(`view-${viewName}`);
+
+      if (activeNav) activeNav.classList.add('active');
+      if (activeSec) {
+        activeSec.classList.add('active');
+        activeSec.style.display = 'block';
+      }
+
+      if (viewName === 'overview') {
+        fetchStatus(); fetchSessions(); fetchLogs();
+      } else if (viewName === 'sessions') {
+        fetchSessions();
+      } else if (viewName === 'commands') {
+        fetchCommands();
+      } else if (viewName === 'logs') {
+        fetchLogs();
+      } else if (viewName === 'debug') {
+        fetchDebug();
+      }
+    }
+
+    // Attach handlers
+    ['overview', 'sessions', 'commands', 'logs', 'debug'].forEach(name => {
+      const btn = document.getElementById(`nav-btn-${name}`);
+      addTouchClick(btn, () => switchView(name));
+    });
+
+    addTouchClick(document.getElementById('nav-btn-exit'), () => triggerSaveDB());
+    addTouchClick(document.getElementById('logo-btn-home'), () => switchView('overview'));
+    addTouchClick(document.getElementById('btn-notification-bell'), () => {
+      fetchStatus(); fetchSessions(); fetchLogs();
+    });
+    addTouchClick(document.getElementById('btn-refresh-sessions-tab'), () => fetchSessions());
+    addTouchClick(document.getElementById('btn-refresh-logs-tab'), () => fetchLogs());
+    addTouchClick(document.getElementById('btn-refresh-debug-tab'), () => fetchDebug());
+
+    async function fetchStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        state.status = data;
+
+        document.getElementById('label-user-name').innerText = `@${data.username || data.userID || 'InstaBOT'}`;
+        document.getElementById('val-total-users').innerText = data.totalUsers || 0;
+        document.getElementById('val-cmd-count').innerText = data.commandCount || 92;
+        document.getElementById('val-events-count').innerText = `${data.eventCount || 7} Events`;
+
+        const sec = data.uptime || 0;
+        const h = Math.floor(sec / 3600);
+        const m = Math.floor((sec % 3600) / 60);
+        const s = sec % 60;
+        document.getElementById('val-uptime').innerText = `${h}h ${m}m ${s}s`;
+
+        const heapMB = Math.round((data.memory?.heapUsed || 0) / 1024 / 1024);
+        document.getElementById('val-ram-usage').innerText = `${heapMB} MB / 512 MB`;
+      } catch (e) {}
+    }
+
+    async function fetchSessions() {
+      try {
+        const res = await fetch('/api/threads');
+        const data = await res.json();
+        state.threads = data.threads || [];
+        renderSessionsOverview();
+        renderSessionsFull();
+      } catch (e) {}
+    }
+
+    function renderSessionsOverview() {
+      const container = document.getElementById('container-active-sessions');
+      if (state.threads.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:10px;">No active threads found.</div>';
+        return;
+      }
+
+      container.innerHTML = state.threads.slice(0, 6).map((t, i) => `
+        <div class="session-card-item" id="session-item-${i}">
+          <div class="session-avatar">${(t.name || 'U')[0].toUpperCase()}</div>
+          <div class="session-info">
+            <div class="session-header-row">
+              <span class="session-username">${escapeHtml(t.name)}</span>
+              <span class="active-badge">ACTIVE</span>
+            </div>
+            <span class="session-sub">${t.isGroup ? 'Group Chat' : 'Direct Message'} • ID: ${t.threadID}</span>
+          </div>
+          <div class="ig-icon">📸</div>
+        </div>
+      `).join('');
+    }
+
+    function renderSessionsFull() {
+      const container = document.getElementById('container-sessions-full-grid');
+      const query = (document.getElementById('input-search-sessions')?.value || '').toLowerCase();
+      const filtered = state.threads.filter(t => (t.name || '').toLowerCase().includes(query) || String(t.threadID).includes(query));
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); padding:10px;">No matching active threads.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map((t, i) => `
+        <div class="section-card" style="height:auto;" id="session-full-card-${i}">
+          <div class="session-header-row" style="margin-bottom:8px;">
+            <span class="session-username" style="font-size:1.1rem;">${escapeHtml(t.name)}</span>
+            <span class="active-badge">${t.isGroup ? 'GROUP' : 'DM'}</span>
+          </div>
+          <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:10px;">Thread ID: ${t.threadID}</div>
+          <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">"${t.snippet || 'No messages yet'}"</div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchCommands() {
+      try {
+        const res = await fetch('/api/commands');
+        const data = await res.json();
+        state.commands = data.commands || [];
+        renderCommandsFull();
+      } catch (e) {}
+    }
+
+    function renderCommandsFull() {
+      const container = document.getElementById('container-commands-full-grid');
+      const query = (document.getElementById('input-search-cmds')?.value || '').toLowerCase();
+      const cat = document.getElementById('select-cmd-cat')?.value || 'ALL';
+
+      const filtered = state.commands.filter(c => {
+        const qMatch = c.name.toLowerCase().includes(query) || (c.description || '').toLowerCase().includes(query);
+        const cMatch = cat === 'ALL' || (c.category || '').toLowerCase() === cat.toLowerCase();
+        return qMatch && cMatch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); padding:10px;">No commands match filter.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(c => `
+        <div class="section-card" style="height:auto;" id="cmd-card-${c.name}">
+          <div class="section-header">
+            <span class="section-title">⚡ ${c.name}</span>
+            <span class="active-badge">${c.category || 'general'}</span>
+          </div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">${c.description || 'No description'}</div>
+          <div style="font-family:var(--font-mono); font-size:0.78rem; color:var(--neon-cyan); background:rgba(0,0,0,0.3); padding:6px 10px; border-radius:6px;">
+            Syntax: ${c.prefix}${c.usage || c.name}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchLogs() {
+      try {
+        const res = await fetch('/api/logs');
+        const data = await res.json();
+        state.logs = data.logs || [];
+        renderLogsOverview();
+        renderLogsFull();
+      } catch (e) {}
+    }
+
+    function renderLogsOverview() {
+      const container = document.getElementById('container-command-logs');
+      if (state.logs.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem; padding:10px;">No recent logs.</div>';
+        return;
+      }
+
+      container.innerHTML = state.logs.slice(0, 6).map((l, i) => `
+        <div class="log-item" id="log-item-${i}">
+          <div class="log-time-action">
+            <span class="log-timestamp">${l.time || '14:32:01'}</span>
+            <span class="log-action-text">${escapeHtml(l.message || 'Executing command...')}</span>
+            <span class="log-user-tag">@system</span>
+          </div>
+          <div class="log-type-icon">💜</div>
+        </div>
+      `).join('');
+    }
+
+    function renderLogsFull() {
+      const container = document.getElementById('container-logs-full-stream');
+      const query = (document.getElementById('input-search-logs')?.value || '').toLowerCase();
+      const level = document.getElementById('select-log-level')?.value || 'ALL';
+
+      const filtered = state.logs.filter(l => {
+        const qMatch = (l.message || '').toLowerCase().includes(query);
+        const lMatch = level === 'ALL' || l.level === level;
+        return qMatch && lMatch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); padding:10px;">No logs match filter.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map((l, i) => `
+        <div class="log-item" id="log-full-item-${i}">
+          <div class="log-time-action">
+            <span class="log-timestamp">[${l.time || '12:00'}] [${l.level || 'INFO'}]</span>
+            <span class="log-action-text">${escapeHtml(l.message)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchDebug() {
+      try {
+        const res = await fetch('/api/debug');
+        const data = await res.json();
+        state.debug = data;
+        document.getElementById('code-debug-tree-full').innerText = JSON.stringify(data, null, 2);
+      } catch (e) {}
+    }
+
+    async function triggerSaveDB() {
+      try {
+        await fetch('/api/action/save-db', { method: 'POST' });
+        alert('Database saved to disk successfully!');
+      } catch (e) {}
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    fetchStatus();
+    fetchSessions();
+    fetchLogs();
+    setInterval(fetchStatus, 5000);
+  </script>
+</body>
+</html>

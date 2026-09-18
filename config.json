@@ -1,0 +1,93 @@
+{
+  "botName": "InstaBOT",
+  "prefix": "*",
+  "language": "en",
+  "adminBot": [],
+  "devUsers": [
+    "36296727311",
+    "49212864825"
+  ],
+  "nickNameOnStart": "InstaBOT",
+  "env": {
+    "token": "k",
+    "url": "",
+    "notes": "Optional /endpoints for custom commands. Read from the environment when left blank (INSTABOT_TOKEN / INSTABOT_URL). Use them for a custom music server or any external API your commands call."
+  },
+  "server": {
+    "url": "",
+    "token": "",
+    "timeout": 60000,
+    "notes": "The shared ig-chat-api-server. url + token are the SAME for every bot and are intentionally global: one server hosts many accounts. Each bot is identified by the Instagram account id (ds_user_id) inside its own cookies, which it pushes to the server; the server returns that id and the bot adopts it. There is no per-bot id and no per-bot token. Point these at your own server instead only if you run a separate deployment (IG_API_SERVER / IG_API_TOKEN override whatever is here)."
+  },
+  "account": {
+    "proxy": null,
+    "userAgent": null,
+    "notes": "Instagram login is cookie-only. Put your Instagram cookies in account.txt: a Netscape cookie file (Cookie-Editor export), a `sessionid=...; ds_user_id=...; csrftoken=...` string, or a JSON array of cookie objects. `sessionid` and `ds_user_id` are required. `proxy` is an optional HTTP(S) proxy URL and `userAgent` overrides the default Instagram Android user agent."
+  },
+  "music": {
+    "enable": true,
+    "apiUrl": "",
+    "apiToken": "",
+    "notes": "Song search for the sing command. Leave apiUrl/apiToken blank to search Instagram's own music catalogue. Point them at your music server to search there instead; {query} is replaced with the song text."
+  },
+  "antiInbox": false,
+  "noPrefix": false,
+  "welcome": {
+    "enable": false,
+    "message": "Welcome %1 to %2! 👋",
+    "threadIDs": [],
+    "selfMessage": "Thanks for inviting me to %2 💋. Type {prefix}help to see all available commands.",
+    "notes": "Greet members added to a group thread. %1 = the new member, %2 = the thread name. selfMessage is sent when the BOT itself is added ({prefix} = the live prefix, %2 = the group name). Leave threadIDs empty for every thread, or list the thread IDs to limit it."
+  },
+  "leave": {
+    "enable": false,
+    "message": "%1 left %2. 👋",
+    "threadIDs": [],
+    "notes": "Announce members who leave or are removed from a group thread. %1 = the member, %2 = the thread name. Leave threadIDs empty for every thread."
+  },
+  "defaultOff": false,
+  "adminOnly": {
+    "enable": false,
+    "ignoreCommands": []
+  },
+  "whiteList": {
+    "enable": false,
+    "userIDs": [],
+    "threadIDs": []
+  },
+  "hideNotiMessage": {
+    "commandNotFound": false,
+    "adminOnly": false,
+    "userBanned": false,
+    "needRoleToUseCommand": false
+  },
+  "cooldown": {
+    "default": 1
+  },
+  "selfListen": true,
+  "listenEvents": true,
+  "autoMarkRead": false,
+  "autoMarkDelivery": true,
+  "autoReconnect": true,
+  "restartListenInterval": 3600000,
+  "logEvents": {
+    "disableAll": false,
+    "message": true,
+    "message_reply": true,
+    "message_reaction": true,
+    "message_unsend": true,
+    "read_receipt": false,
+    "typ": false
+  },
+  "onlineStatus": {
+    "enable": true,
+    "file": "data/online-status.jsonl",
+    "interval": 60000,
+    "notes": "Appends one JSON line per interval recording that the bot is online, together with uptime and basic stats."
+  },
+  "database": {
+    "dir": "data",
+    "autoRefreshThreadInfo": true,
+    "notes": "Simple JSON storage for users and threads. Files are created automatically."
+  }
+}

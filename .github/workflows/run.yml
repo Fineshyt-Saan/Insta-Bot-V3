@@ -1,0 +1,96 @@
+name: InstaBOT Engine Runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      node_version:
+        description: 'Node.js version'
+        required: false
+        type: choice
+        options:
+          - '22'
+          - '20'
+        default: '22'
+      mode:
+        description: 'Execution mode (direct cookies vs server)'
+        required: false
+        type: choice
+        options:
+          - 'direct'
+          - 'server'
+        default: 'direct'
+      custom_cookies:
+        description: 'Optional: Paste raw Instagram cookies directly (overrides secrets)'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  run-bot:
+    name: 🚀 InstaBOT Engine Runner
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version || '22' }}
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: |
+          echo "Installing runtime dependencies and native Canvas modules..."
+          npm install --include=optional
+
+      - name: 🔐 Configure Authentication Credentials
+        env:
+          CUSTOM_COOKIES: ${{ inputs.custom_cookies }}
+          ACCOUNT_TXT: ${{ secrets.ACCOUNT_TXT }}
+          IG_COOKIES: ${{ secrets.IG_COOKIES }}
+          FB_STATE: ${{ secrets.FB_STATE }}
+          IG_API_SERVER: ${{ secrets.IG_API_SERVER }}
+          IG_API_TOKEN: ${{ secrets.IG_API_TOKEN }}
+        run: |
+          echo "=================================================="
+          echo "🔑 CONFIGURING INSTAGRAM SESSION CREDENTIALS"
+          echo "=================================================="
+          if [ -n "$CUSTOM_COOKIES" ]; then
+            printf '%s\n' "$CUSTOM_COOKIES" > account.txt
+            echo "✅ Loaded Instagram credentials from workflow custom input."
+          elif [ -n "$IG_COOKIES" ]; then
+            printf '%s\n' "$IG_COOKIES" > account.txt
+            echo "✅ Loaded Instagram credentials from IG_COOKIES repository secret."
+          elif [ -n "$ACCOUNT_TXT" ]; then
+            printf '%s\n' "$ACCOUNT_TXT" > account.txt
+            echo "✅ Loaded Instagram credentials from ACCOUNT_TXT repository secret."
+          elif [ -n "$FB_STATE" ]; then
+            printf '%s\n' "$FB_STATE" > account.txt
+            echo "✅ Loaded Instagram credentials from FB_STATE repository secret."
+          fi
+          if [ -s account.txt ]; then
+            echo "✅ account.txt configured ($(wc -c < account.txt) bytes)"
+          else
+            echo "ℹ️ account.txt will be loaded from repository or environment fallback."
+          fi
+          echo "=================================================="
+
+      - name: 🤖 Start InstaBOT Engine
+        env:
+          PORT: 8080
+          NODE_ENV: production
+          FORCE_COLOR: '1'
+          ACCOUNT_TXT: ${{ secrets.ACCOUNT_TXT }}
+          IG_COOKIES: ${{ secrets.IG_COOKIES }}
+          FB_STATE: ${{ secrets.FB_STATE }}
+          IG_API_SERVER: ${{ secrets.IG_API_SERVER }}
+          IG_API_TOKEN: ${{ secrets.IG_API_TOKEN }}
+        run: |
+          echo "Starting InstaBOT Engine with Floppa ecosystem..."
+          npm start

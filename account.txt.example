@@ -1,0 +1,37 @@
+# ==============================================================================
+# InstaBOT Account Authentication (account.txt)
+# ==============================================================================
+# Copy this file to `account.txt` in the root directory and paste your cookies.
+#
+# InstaBOT supports 3 cookie formats:
+#
+# 1. NETSCAPE COOKIE FORMAT (Recommended - from browser Cookie-Editor export)
+# ------------------------------------------------------------------------------
+# .instagram.com	TRUE	/	TRUE	1798765432	sessionid	YOUR_SESSION_ID
+# .instagram.com	TRUE	/	TRUE	1798765432	ds_user_id	YOUR_USER_ID
+# .instagram.com	TRUE	/	TRUE	1798765432	csrftoken	YOUR_CSRF_TOKEN
+# .instagram.com	TRUE	/	TRUE	1798765432	mid	YOUR_MID_VALUE
+# .instagram.com	TRUE	/	TRUE	1798765432	rur	"NAO\054YOUR_USER_ID\054..."
+#
+# 2. RAW COOKIE HEADER STRING (From DevTools Network tab Request Headers)
+# ------------------------------------------------------------------------------
+# sessionid=YOUR_SESSION_ID; ds_user_id=YOUR_USER_ID; csrftoken=YOUR_CSRF_TOKEN; mid=YOUR_MID;
+#
+# 3. JSON ARRAY FORMAT (From Cookie-Editor export as JSON)
+# ------------------------------------------------------------------------------
+# [
+#   { "name": "sessionid", "value": "YOUR_SESSION_ID", "domain": ".instagram.com", "path": "/" },
+#   { "name": "ds_user_id", "value": "YOUR_USER_ID", "domain": ".instagram.com", "path": "/" },
+#   { "name": "csrftoken", "value": "YOUR_CSRF_TOKEN", "domain": ".instagram.com", "path": "/" }
+# ]
+#
+# REQUIRED COOKIES:
+# - `sessionid` : Active Instagram session token
+# - `ds_user_id`: Numeric Instagram user ID belonging to the account
+#
+# HOW TO EXPORT COOKIES:
+# 1. Open Chrome or Firefox and log in to https://www.instagram.com
+# 2. Install the "Cookie-Editor" extension (Chrome Web Store / Firefox Add-ons)
+# 3. Click the Cookie-Editor icon -> click "Export" -> select "Netscape"
+# 4. Paste the clipboard contents into `account.txt`
+# ==============================================================================
