@@ -1,21 +1,16 @@
 {
-  "botName": "𝐒𝐀𝐀𝐍 𝐄𝐗𝐇𝐀𝐔𝐒𝐓𝐄𝐃",
-  "prefix": "*",
+  "botName": "InstaBOT",
+  "prefix": "-",
   "language": "en",
-  "adminBot": [],
-  "devUsers": [
-    "67554584077",
-    ""
-  ],
-  "nickNameOnStart": "𝐒𝐀𝐀𝐍 𝐄𝐗𝐇𝐀𝐔𝐒𝐓𝐄𝐃",
+  "adminBot": [70161745815],
+  "nickNameOnStart": "InstaBOT",
   "env": {
-    "token": "chat.api.toke.neokex.ica.token.can.change.a9y.2ime.ok",
-    "url": "https://nkx-ica.neokex.xyz",
+    "token": "
     "notes": "Optional secrets/endpoints for custom commands. Read from the environment when left blank (INSTABOT_TOKEN / INSTABOT_URL). Use them for a custom music server or any external API your commands call."
   },
   "server": {
-    "url": "https://nkx-ica.neokex.xyz",
-    "token": "chat.api.toke.neokex.ica.token.can.change.a9y.2ime.ok",
+    "url": "",
+    "token": "ch",
     "timeout": 60000,
     "notes": "The shared ig-chat-api-server. url + token are the SAME for every bot and are intentionally global: one server hosts many accounts. Each bot is identified by the Instagram account id (ds_user_id) inside its own cookies, which it pushes to the server; the server returns that id and the bot adopts it. There is no per-bot id and no per-bot token. Point these at your own server instead only if you run a separate deployment (IG_API_SERVER / IG_API_TOKEN override whatever is here)."
   },
@@ -33,19 +28,18 @@
   "antiInbox": false,
   "noPrefix": false,
   "welcome": {
-    "enable": false,
+    "enable": true,
     "message": "Welcome %1 to %2! 👋",
     "threadIDs": [],
     "selfMessage": "Thanks for inviting me to %2 💋. Type {prefix}help to see all available commands.",
     "notes": "Greet members added to a group thread. %1 = the new member, %2 = the thread name. selfMessage is sent when the BOT itself is added ({prefix} = the live prefix, %2 = the group name). Leave threadIDs empty for every thread, or list the thread IDs to limit it."
   },
   "leave": {
-    "enable": false,
+    "enable": true,
     "message": "%1 left %2. 👋",
     "threadIDs": [],
     "notes": "Announce members who leave or are removed from a group thread. %1 = the member, %2 = the thread name. Leave threadIDs empty for every thread."
   },
-  "defaultOff": false,
   "adminOnly": {
     "enable": false,
     "ignoreCommands": []
