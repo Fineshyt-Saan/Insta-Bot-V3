@@ -1,21 +1,21 @@
 {
-  "botName": "InstaBOT",
+  "botName": "𝐒𝐀𝐀𝐍 𝐄𝐗𝐇𝐀𝐔𝐒𝐓𝐄𝐃",
   "prefix": "*",
   "language": "en",
   "adminBot": [],
   "devUsers": [
-    "36296727311",
-    "49212864825"
+    "67554584077",
+    ""
   ],
-  "nickNameOnStart": "InstaBOT",
+  "nickNameOnStart": "𝐒𝐀𝐀𝐍 𝐄𝐗𝐇𝐀𝐔𝐒𝐓𝐄𝐃",
   "env": {
-    "token": "k",
-    "url": "",
-    "notes": "Optional /endpoints for custom commands. Read from the environment when left blank (INSTABOT_TOKEN / INSTABOT_URL). Use them for a custom music server or any external API your commands call."
+    "token": "chat.api.toke.neokex.ica.token.can.change.a9y.2ime.ok",
+    "url": "https://nkx-ica.neokex.xyz",
+    "notes": "Optional secrets/endpoints for custom commands. Read from the environment when left blank (INSTABOT_TOKEN / INSTABOT_URL). Use them for a custom music server or any external API your commands call."
   },
   "server": {
-    "url": "",
-    "token": "",
+    "url": "https://nkx-ica.neokex.xyz",
+    "token": "chat.api.toke.neokex.ica.token.can.change.a9y.2ime.ok",
     "timeout": 60000,
     "notes": "The shared ig-chat-api-server. url + token are the SAME for every bot and are intentionally global: one server hosts many accounts. Each bot is identified by the Instagram account id (ds_user_id) inside its own cookies, which it pushes to the server; the server returns that id and the bot adopts it. There is no per-bot id and no per-bot token. Point these at your own server instead only if you run a separate deployment (IG_API_SERVER / IG_API_TOKEN override whatever is here)."
   },
