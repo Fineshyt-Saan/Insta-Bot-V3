@@ -83,7 +83,7 @@ For a deeper breakdown of the runtime and backend components, see "docs/ARCHITEC
 
 2) Install
 
-git clone https://github.com/Saan-Irl/InstaBOT.git
+git clone https://github.com/Fineshyt-Saan/Insta-Bot-V3.git
 cd InstaBOT
 npm install
 
